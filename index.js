@@ -15,9 +15,20 @@ function createGrid(size) {
     }
 }
 
-function paint(event) {
+function paintBlack(event) {
     const targetElement = event.target;
     targetElement.style.backgroundColor = 'black';
+}
+
+function randomRGBNumber() {
+    return Math.floor(Math.random() * 255);
+}
+
+function paintRandomColor(event) {
+    const targetElement = event.target;
+    targetElement.style.backgroundColor = `rgba(${randomRGBNumber()}, 
+                ${randomRGBNumber()}, 
+                ${randomRGBNumber()})`;
 }
 
 function resizeGrid(input) {
@@ -33,18 +44,75 @@ function resizeGrid(input) {
     }
 }
 
+function erase(event) {
+    const targetElement = event.target;
+    targetElement.style.backgroundColor = 'transparent';
+}
+
+function drawWithBlack(event) {
+    console.log('black');
+    container.addEventListener('mousedown', (e) => {
+        paintBlack(e);
+
+        container.addEventListener('mousemove', paintBlack);
+
+        window.addEventListener('mouseup', () => {
+            container.removeEventListener('mousemove', paintBlack);
+        });
+    });
+}
+
+function drawWithRandomColor(event) {
+    console.log('random');
+    container.addEventListener('mousedown', (e) => {
+        paintRandomColor(e);
+
+        container.addEventListener('mousemove', paintRandomColor);
+
+        window.addEventListener('mouseup', () => {
+            container.removeEventListener('mousemove', paintRandomColor);
+        });
+    });
+}
+
+// CAMBIA TAMAÑO DEL GRID
 button.addEventListener('click', () => {
     const input = prompt('Input the number of squares per size');
     const numbericValue = Number(input);
     resizeGrid(numbericValue);
 });
 
-container.addEventListener('mousedown', (e) => {
-    paint(e);
+const blackButton = document.querySelector('#black-button');
+const randomButton = document.querySelector('#random-button');
+const eraserButton = document.querySelector('#eraser-button');
+const clearButton = document.querySelector('#clear-button');
 
-    container.addEventListener('mousemove', paint);
+drawWithBlack();
 
-    window.addEventListener('mouseup', () => {
-        container.removeEventListener('mousemove', paint);
+blackButton.addEventListener('click', (e) => {
+    drawWithBlack(e);
+});
+
+randomButton.addEventListener('click', drawWithRandomColor);
+
+eraserButton.addEventListener('click', (e) => {
+    container.addEventListener('mousedown', (e) => {
+        erase(e);
+
+        container.addEventListener('mousemove', erase);
+
+        window.addEventListener('mouseup', () => {
+            container.removeEventListener('mousemove', erase);
+            console.log('removed');
+        });
     });
+})
+
+clearButton.addEventListener('click', () => {
+    console.log('clean');
+
+    const squares = document.querySelectorAll('.square');
+    for (const square of squares) {
+        square.style.backgroundColor = 'transparent';
+    }
 });

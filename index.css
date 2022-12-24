@@ -24,3 +24,7 @@ button {
     height: 40px;
     width: 140px;
 }
+
+.buttons {
+    margin-top: 10px;
+}
