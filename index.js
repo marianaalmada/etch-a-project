@@ -49,7 +49,7 @@ function erase(event) {
     targetElement.style.backgroundColor = 'transparent';
 }
 
-function drawWithBlack(event) {
+function drawWithBlack() {
     console.log('black');
     container.addEventListener('mousedown', (e) => {
         paintBlack(e);
@@ -87,32 +87,83 @@ const randomButton = document.querySelector('#random-button');
 const eraserButton = document.querySelector('#eraser-button');
 const clearButton = document.querySelector('#clear-button');
 
-drawWithBlack();
+// drawWithBlack();
 
-blackButton.addEventListener('click', (e) => {
-    drawWithBlack(e);
-});
+let blackButtonState = false;
+let eraserButtonState = false;
+let randomButtonState = false;
+let clearButtonState = false;
 
-randomButton.addEventListener('click', drawWithRandomColor);
-
-eraserButton.addEventListener('click', (e) => {
-    container.addEventListener('mousedown', (e) => {
-        erase(e);
-
-        container.addEventListener('mousemove', erase);
-
-        window.addEventListener('mouseup', () => {
-            container.removeEventListener('mousemove', erase);
-            console.log('removed');
-        });
-    });
-})
-
-clearButton.addEventListener('click', () => {
-    console.log('clean');
-
-    const squares = document.querySelectorAll('.square');
-    for (const square of squares) {
-        square.style.backgroundColor = 'transparent';
+document.addEventListener('click', (e) => {
+    const button = e.target;
+    
+    if(button.matches('#black-button')) {
+        eraserButtonState = false;
+        randomButtonState = false; 
+        blackButtonState = true;
     }
+
+    if(button.matches('#eraser-button')) {
+        blackButtonState = false;
+        randomButtonState = false; 
+        eraserButtonState = true;
+    }
+
+    if (button.matches('#random-button')) {
+        eraserButtonState = false;
+        blackButtonState = false; 
+        randomButtonState = true;  
+    }
+
+    if(button.matches('#clear-button')) {
+        eraserButtonState = false;
+        blackButtonState = false; 
+        randomButtonState = false; 
+        clearButtonState = true;
+    }
+
+    if(button.matches('#clear-button') && clearButtonState) {
+        console.log('clean button');
+
+        const squares = document.querySelectorAll('.square');
+        for (const square of squares) {
+            square.style.backgroundColor = 'transparent';
+        }
+    }
+
+    container.addEventListener('mousedown', (e) => {
+
+        if (button.matches('#black-button') && blackButtonState) {
+            console.log('black button');
+
+            paintBlack(e);
+            container.addEventListener('mousemove', paintBlack);
+
+            window.addEventListener('mouseup', () => {
+                container.removeEventListener('mousemove', paintBlack);
+            });
+        }
+    
+        if (button.matches('#eraser-button') && eraserButtonState) {
+            console.log('erase button');
+            erase(e);
+
+            container.addEventListener('mousemove', erase);
+
+            window.addEventListener('mouseup', () => {
+                container.removeEventListener('mousemove', erase);
+            });
+        }
+
+        if (button.matches('#random-button') && randomButtonState) {
+            console.log('random button');
+            paintRandomColor(e);
+
+            container.addEventListener('mousemove', paintRandomColor);
+
+            window.addEventListener('mouseup', () => {
+                container.removeEventListener('mousemove', paintRandomColor);
+            });
+        }
+    });
 });
