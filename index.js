@@ -75,6 +75,10 @@ function drawWithRandomColor(event) {
     });
 }
 
+function shade(element, opacity) {
+    element.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
+}
+
 // CAMBIA TAMAÑO DEL GRID
 button.addEventListener('click', () => {
     const input = prompt('Input the number of squares per size');
@@ -82,17 +86,15 @@ button.addEventListener('click', () => {
     resizeGrid(numbericValue);
 });
 
-const blackButton = document.querySelector('#black-button');
-const randomButton = document.querySelector('#random-button');
-const eraserButton = document.querySelector('#eraser-button');
-const clearButton = document.querySelector('#clear-button');
-
-// drawWithBlack();
+drawWithBlack();
 
 let blackButtonState = false;
 let eraserButtonState = false;
 let randomButtonState = false;
 let clearButtonState = false;
+let shadingButtonState = false;
+
+let cont = 0;
 
 document.addEventListener('click', (e) => {
     const button = e.target;
@@ -100,26 +102,41 @@ document.addEventListener('click', (e) => {
     if(button.matches('#black-button')) {
         eraserButtonState = false;
         randomButtonState = false; 
-        blackButtonState = true;
+        clearButtonState = false;
+        shadingButtonState = false;
+        blackButtonState = true; 
     }
 
     if(button.matches('#eraser-button')) {
-        blackButtonState = false;
         randomButtonState = false; 
+        clearButtonState = false;
+        shadingButtonState = false;
+        blackButtonState = false; 
         eraserButtonState = true;
     }
 
-    if (button.matches('#random-button')) {
-        eraserButtonState = false;
+    if (button.matches('#random-button')) { 
+        clearButtonState = false;
+        shadingButtonState = false;
         blackButtonState = false; 
-        randomButtonState = true;  
+        eraserButtonState = false; 
+        randomButtonState = true; 
     }
 
     if(button.matches('#clear-button')) {
+        randomButtonState = false; 
+        shadingButtonState = false;
+        blackButtonState = false; 
+        eraserButtonState = false;
+        clearButtonState = true;
+    }
+
+    if(button.matches('#shading')) {
         eraserButtonState = false;
         blackButtonState = false; 
         randomButtonState = false; 
-        clearButtonState = true;
+        clearButtonState = false;
+        shadingButtonState = true;
     }
 
     if(button.matches('#clear-button') && clearButtonState) {
@@ -164,6 +181,19 @@ document.addEventListener('click', (e) => {
             window.addEventListener('mouseup', () => {
                 container.removeEventListener('mousemove', paintRandomColor);
             });
+        }
+
+        if (button.matches('#shading') && shadingButtonState) {
+            const element = e.target;
+            cont += 0.1;
+
+            shade(element, cont);
+
+            // container.addEventListener('mousemove', shade(e, cont));
+
+            // window.addEventListener('mouseup', () => {
+            //     container.removeEventListener('mousemove', shade);
+            // });
         }
     });
 });
