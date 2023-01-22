@@ -1,5 +1,4 @@
 const container = document.querySelector('.grid-container');
-const button = document.querySelector('#button');
 
 createGrid(16);
 
@@ -75,18 +74,32 @@ function drawWithRandomColor(event) {
     });
 }
 
-function shade(element, opacity) {
-    element.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
+function shade(event = 'mousemove') {
+    const squares = document.querySelectorAll('.square');
+
+    for (const square of squares) {
+        square.addEventListener(event, (e) => {
+            if(square.style.opacity >= 0.1) {
+                square.style.backgroundColor = 'black';
+                square.style.opacity = Number(square.style.opacity) + 0.1;
+            } else {
+                square.style.backgroundColor = 'black';
+                square.style.opacity = 0.1;
+            }
+        });
+    }
 }
 
 // CAMBIA TAMAÑO DEL GRID
-button.addEventListener('click', () => {
-    const input = prompt('Input the number of squares per size');
-    const numbericValue = Number(input);
+const slider = document.querySelector('#slider');
+const sliderOutput = document.querySelector('#slider-output');
+slider.addEventListener('input', () => {
+    sliderOutput.textContent = slider.value;
+    const numbericValue = slider.value;
     resizeGrid(numbericValue);
 });
 
-drawWithBlack();
+// drawWithBlack();
 
 let blackButtonState = false;
 let eraserButtonState = false;
@@ -148,6 +161,17 @@ document.addEventListener('click', (e) => {
         }
     }
 
+    if (button.matches('#shading') && shadingButtonState) {
+        console.log('shading');
+        shade('mousedown');
+
+        container.addEventListener('mousemove', shade());
+
+        window.addEventListener('mouseup', () => {
+            container.removeEventListener('mousemove', shade());
+        });
+    }
+
     container.addEventListener('mousedown', (e) => {
 
         if (button.matches('#black-button') && blackButtonState) {
@@ -181,19 +205,6 @@ document.addEventListener('click', (e) => {
             window.addEventListener('mouseup', () => {
                 container.removeEventListener('mousemove', paintRandomColor);
             });
-        }
-
-        if (button.matches('#shading') && shadingButtonState) {
-            const element = e.target;
-            cont += 0.1;
-
-            shade(element, cont);
-
-            // container.addEventListener('mousemove', shade(e, cont));
-
-            // window.addEventListener('mouseup', () => {
-            //     container.removeEventListener('mousemove', shade);
-            // });
         }
     });
 });

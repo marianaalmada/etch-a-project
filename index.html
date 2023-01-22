@@ -11,7 +11,9 @@
     <h1>Etch-a-Sketch</h1>
     <div class="main-container">
         <div class="buttons-container">
-            <button id="button">Resize grid</button>
+            <label for="slider">Choose your sketch's size:</label>
+            <input type="range" min="16" max="64" step="1" id="slider" value="16">
+            <output for="slider" id="slider-output"></output>
             <div class="buttons">
                 <button id="black-button">Black</button>
                 <button id="random-button">Random</button>
